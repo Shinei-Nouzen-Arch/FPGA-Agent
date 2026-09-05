@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Timing Closure"
+  short_description: "Close Vivado timing with QoR guidance"
+  default_prompt: "Use $vivado-timing-closure to diagnose this WNS/TNS timing closure issue."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vitis HLS Synthesis"
+  short_description: "Optimize Vitis HLS kernels and reports"
+  default_prompt: "Use $vitis-hls-synthesis to optimize this HLS kernel and synthesis report."

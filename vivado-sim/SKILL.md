@@ -10,13 +10,13 @@ Based on UG900 (v2025.2). For complete command syntax and property tables, see R
 ## Simulation Flow Overview
 
 ```
-RTL + Testbench ──→ Behavioral Sim (功能验证, 最快)
+RTL + Testbench ──→ Behavioral Sim (functional verification, fastest)
        ↓ synth_design
-综合网表 ──→ Post-Synth Sim (综合正确性验证, 可选)
+Synthesized Netlist ──→ Post-Synth Sim (synthesis correctness, optional)
        ↓ place_design + route_design
-实现网表 + SDF ──→ Timing Sim (时序验证, 最慢)
+Implemented Netlist + SDF ──→ Timing Sim (timing verification, slowest)
        ↓
-SAIF/VCD ──→ report_power (功耗分析)
+SAIF/VCD ──→ report_power (power analysis)
 ```
 
 ### Three Simulation Stages

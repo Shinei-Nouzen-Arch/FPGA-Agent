@@ -1,0 +1,35 @@
+{
+  "skill_name": "vivado-timing-closure",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My design has WNS = -0.5 ns, and place_design -directive Explore made little improvement. What should I try next?",
+      "expected_output": "Review constraint coverage, check_timing, report_methodology, and the limiting paths before selecting another strategy. Suggest stage-appropriate physical optimization and routing when supported by the evidence. Compare WNS, TNS, failing endpoints, hold, and routing results; a strategy plateau is not task completion. This advice-only request does not authorize running optimization.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "report_qor_assessment shows a score of 3, and there is a TIMING-16 warning. How should I handle this?",
+      "expected_output": "Use the QoR score as a triage signal, not proof that constraints are correct or timing is closed. Inspect the actual TIMING-16 message and affected paths, then identify supported constraint or implementation actions. Explain any missing evidence and do not declare closure from the score alone.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "After fanout splitting with RapidWright, WNS regressed from -0.4 ns to -1.2 ns. Why might that happen?",
+      "expected_output": "Explain that replicated drivers can increase utilization, placement pressure, or routing congestion, but do not infer a definitive cause from WNS alone. Compare the candidate with the preserved baseline under identical constraints, inspect the changed paths and resource usage, and validate netlist changes on a copy before adopting them.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "How can I estimate Fmax from a Vivado timing report? I cannot find an explicit Fmax value in report_timing_summary.",
+      "expected_output": "For a simple same-clock, single-cycle setup path, estimate Fmax in MHz as 1000 / (clock_period_ns - WNS_ns). For a 1.5 ns period and WNS = -0.419 ns, the estimate is about 521.1 MHz. State the applicable clock/path assumptions; this estimate does not replace full timing acceptance or justify changing the requested clock target.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "My design has WNS = -0.3 ns after placement, but WNS = -0.8 ns after routing. Is congestion the cause?",
+      "expected_output": "Treat congestion as a hypothesis rather than a conclusion. Compare the final routed paths with the placement estimate, inspect report_design_analysis -congestion and router logs, and check placement spread and routing detours. Recommend targeted placement or routing experiments only when supported, preserving the best candidate and the full constraints.",
+      "files": []
+    }
+  ]
+}

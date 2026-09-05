@@ -1,6 +1,6 @@
 [
   {
-    "query": "如何在Vivado中运行行为仿真？",
+    "query": "What steps should I follow to launch an RTL behavioral simulation in Vivado?",
     "should_trigger": true
   },
   {
@@ -8,7 +8,7 @@
     "should_trigger": true
   },
   {
-    "query": "我的后综合仿真结果和RTL仿真不一致，怎么排查？",
+    "query": "My post-synthesis simulation results differ from the RTL simulation. How should I debug this?",
     "should_trigger": true
   },
   {
@@ -16,7 +16,7 @@
     "should_trigger": true
   },
   {
-    "query": "xsim的三步流程是什么？xvlog、xelab、xsim怎么用？",
+    "query": "What is the three-step xsim flow, and how do I use xvlog, xelab, and xsim?",
     "should_trigger": true
   },
   {
@@ -24,7 +24,7 @@
     "should_trigger": true
   },
   {
-    "query": "我想用add_force给时钟信号加激励，怎么写？",
+    "query": "How do I use add_force to drive a clock signal in simulation?",
     "should_trigger": true
   },
   {
@@ -32,7 +32,7 @@
     "should_trigger": true
   },
   {
-    "query": "怎么生成时序仿真网表？write_verilog -mode timesim和write_sdf怎么配合使用？",
+    "query": "How do I generate a timing simulation netlist using write_verilog -mode timesim together with write_sdf?",
     "should_trigger": true
   },
   {
@@ -44,7 +44,7 @@
     "should_trigger": true
   },
   {
-    "query": "怎么在仿真中收集SAIF文件用于功耗分析？",
+    "query": "How do I collect a SAIF file during simulation for power analysis?",
     "should_trigger": true
   },
   {
@@ -52,7 +52,7 @@
     "should_trigger": true
   },
   {
-    "query": "launch_simulation命令有哪些mode和type选项？",
+    "query": "Which mode and type options does launch_simulation support?",
     "should_trigger": true
   },
   {
@@ -60,11 +60,11 @@
     "should_trigger": true
   },
   {
-    "query": "我想用VCS跑Vivado设计的仿真，需要怎么设置？",
+    "query": "How should I configure VCS to simulate a Vivado design?",
     "should_trigger": true
   },
   {
-    "query": "export_simulation和launch_simulation -scripts_only有什么区别？",
+    "query": "What is the difference between export_simulation and launch_simulation -scripts_only?",
     "should_trigger": true
   },
   {
@@ -72,11 +72,11 @@
     "should_trigger": true
   },
   {
-    "query": "时序仿真报setup/hold violation怎么处理？",
+    "query": "How should I investigate setup and hold violations reported during timing simulation?",
     "should_trigger": true
   },
   {
-    "query": "怎么在xsim中读取信号值？get_value和get_objects怎么用？",
+    "query": "How do I read signal values in xsim using get_value and get_objects?",
     "should_trigger": true
   },
   {
@@ -84,7 +84,7 @@
     "should_trigger": true
   },
   {
-    "query": "xelab的-transport_int_delays和-pulse_r -pulse_e选项是什么意思？",
+    "query": "What do the xelab options -transport_int_delays, -pulse_r, and -pulse_e mean?",
     "should_trigger": true
   },
   {
@@ -92,7 +92,7 @@
     "should_trigger": true
   },
   {
-    "query": "怎么创建额外的仿真fileset？sim_1以外还能加sim_2吗？",
+    "query": "How do I create an additional simulation fileset, such as sim_2 alongside sim_1?",
     "should_trigger": true
   },
   {
@@ -100,7 +100,7 @@
     "should_trigger": true
   },
   {
-    "query": "open_saif和read_saif配合report_power的完整流程是什么？",
+    "query": "What is the complete flow for using open_saif and read_saif with report_power?",
     "should_trigger": true
   },
   {
@@ -108,7 +108,7 @@
     "should_trigger": true
   },
   {
-    "query": "我的timing仿真报undefined module glbl错误怎么解决？",
+    "query": "How do I resolve an undefined module glbl error in timing simulation?",
     "should_trigger": true
   },
   {
@@ -116,11 +116,11 @@
     "should_trigger": true
   },
   {
-    "query": "xsim中怎么设置条件断点？add_bp -condition的用法？",
+    "query": "How do I set a conditional breakpoint in xsim with add_bp -condition?",
     "should_trigger": true
   },
   {
-    "query": "如何优化Vivado综合策略来提高时序？",
+    "query": "How can I optimize Vivado synthesis strategies to improve timing?",
     "should_trigger": false
   },
   {
@@ -128,7 +128,7 @@
     "should_trigger": false
   },
   {
-    "query": "怎么设置false path约束？",
+    "query": "How do I define a false-path constraint?",
     "should_trigger": false
   },
   {
@@ -136,7 +136,7 @@
     "should_trigger": false
   },
   {
-    "query": "写一个Vivado TCL脚本来自动创建工程并添加源文件",
+    "query": "Write a Vivado TCL script that automatically creates a project and adds source files.",
     "should_trigger": false
   },
   {
@@ -144,7 +144,7 @@
     "should_trigger": false
   },
   {
-    "query": "怎么选择phys_opt_design的directive？",
+    "query": "How should I choose a directive for phys_opt_design?",
     "should_trigger": false
   },
   {
@@ -152,7 +152,7 @@
     "should_trigger": false
   },
   {
-    "query": "我的设计route_design阶段congestion很严重怎么办？",
+    "query": "My design has severe congestion during route_design. What should I do?",
     "should_trigger": false
   },
   {
@@ -160,7 +160,7 @@
     "should_trigger": false
   },
   {
-    "query": "写一个Verilog的FIFO模块",
+    "query": "Write a FIFO module in Verilog.",
     "should_trigger": false
   },
   {
@@ -168,7 +168,7 @@
     "should_trigger": false
   },
   {
-    "query": "帮我写一个Python脚本解析Vivado的timing report",
+    "query": "Write a Python script to parse a Vivado timing report.",
     "should_trigger": false
   },
   {

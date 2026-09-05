@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Analysis"
+  short_description: "Interpret Vivado reports and timing QoR"
+  default_prompt: "Use $vivado-analysis to interpret this Vivado timing or QoR report."

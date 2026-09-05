@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Implementation"
+  short_description: "Choose Vivado implementation strategies"
+  default_prompt: "Use $vivado-impl to choose implementation directives for this design."

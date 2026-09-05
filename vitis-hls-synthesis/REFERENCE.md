@@ -326,15 +326,15 @@ syn.op=add impl=fabric latency=6
 
 ### STREAM
 ```cpp
-// 推荐方式：使用 hls::stream 类（Vitis HLS 2021.2+）
+// Recommended: use the hls::stream class (Vitis HLS 2021.2+).
 #include "hls_stream.h"
 hls::stream<int> fifo("fifo");
 #pragma HLS STREAM variable=fifo depth=64
 
-// 或在声明时指定深度
+// Alternatively, specify the depth in the declaration.
 hls::stream<int, 64> fifo_with_depth;
 
-// 传统 pragma 方式（兼容旧版本）
+// Traditional pragma syntax (compatible with older versions).
 #pragma HLS STREAM variable=fifo type=fifo depth=64
 #pragma HLS STREAM variable=buf type=pipo depth=8
 #pragma HLS STREAM variable=shared_buf type=shared

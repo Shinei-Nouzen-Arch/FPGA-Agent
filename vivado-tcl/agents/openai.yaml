@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado TCL"
+  short_description: "Generate, run, and verify Vivado TCL flows"
+  default_prompt: "Use $vivado-tcl to write and check a Vivado batch TCL script for this flow."

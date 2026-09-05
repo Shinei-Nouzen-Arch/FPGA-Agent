@@ -283,4 +283,5 @@ Only these constraints are used during synthesis:
 
 - Placing attribute on a **hierarchy** affects only its boundary, NOT signals inside (except: `DSP_FOLDING`, `RAM_STYLE`, `ROM_STYLE`, `SHREG_EXTRACT`, `USE_DSP` — these DO affect internal signals)
 - If same attribute is set in both RTL and XDC with different values → **XDC wins**
-- `KEEP` and `DONT_TOUCH` must be set in RTL (XDC does not support them — the objects would already be optimized away)
+- `KEEP` must be set in RTL; XDC does not support it.
+- `DONT_TOUCH` supports both RTL and XDC. Set it in RTL when the object may be optimized away before XDC is read. For existing applicable cells or nets, XDC can set or override the property without requiring an RTL edit. Preserve the user's requested modification scope.

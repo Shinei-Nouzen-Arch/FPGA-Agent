@@ -18,8 +18,11 @@ This skill helps you efficiently perform FPGA high-level synthesis development i
 - Need to optimize DDR access and HBM bandwidth
 
 ## Workflow
+
+Select only the stages needed for the requested outcome and reuse the existing project and results. Report interpretation does not require project initialization or a new build. Code or configuration changes include proportionate validation; an execution request includes the requested run stages and result checks. Generate or review scripts without executing them when that is the requested deliverable. Existing authorization covers necessary in-scope follow-up, but does not automatically extend the task to packaging, implementation, or hardware programming.
+
 ### 1. Project Initialization
-Confirm project structure and target device, create base directories:
+When initialization is needed, determine the project structure and target device from existing sources, configuration, and prior user instructions. Reuse established settings and create only missing directories. Ask only for consequential information that is unavailable; never guess a device or clock required for a run. A generic example can retain clearly marked parameters without blocking on device selection.
 ```bash
 mkdir -p <project>/src <project>/tb
 ```
@@ -28,17 +31,17 @@ mkdir -p <project>/src <project>/tb
 Write HLS kernel code, add pragma optimization instructions as needed, select appropriate data types and interface protocols.
 
 ### 3. Configuration File
-Create `.cfg` configuration file, specify device, clock, interface, optimization and other parameters.
+Create or update the relevant `.cfg` file, preserving established device, clock, interface, and flow settings unless changing them is part of the request.
 
 ### 4. Run Flow
-Execute synthesis flow:
+For execution requests, run the applicable stages and their prerequisites:
 1. C simulation to verify functional correctness
 2. C synthesis to generate RTL
 3. C/RTL co-simulation to verify hardware functionality
-4. Export IP or Vitis kernel
+4. Export IP or Vitis kernel when packaging is part of the requested deliverable
 
 ### 5. Report Analysis
-Check synthesis reports to confirm timing (WNS>0, TNS=0), II, and resource usage meet design requirements.
+Check the status, relevant logs, and outputs of each requested stage. Use simulation results to assess tested functionality and HLS synthesis estimates to assess clock performance, II, latency, and resources against the stated requirements. HLS estimates are not post-route timing signoff; apply the Vivado timing acceptance criteria only when implementation is in scope. Report what was verified, what remains unverified, and the requested artifact locations. Continue necessary authorized work rather than treating report generation or a partial run as completion.
 
 ## Quick Reference
 ### Core Commands

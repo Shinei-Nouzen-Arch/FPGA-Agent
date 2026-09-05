@@ -1,0 +1,17 @@
+# Local Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated evaluation results
+**/evals/eval_results*.json
+**/evals/eval_results*.log
+
+# Local tool sessions
+.Xil/
+*.jou
+vivado*.log
+vitis*.log
+
+# Operating-system metadata
+.DS_Store

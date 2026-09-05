@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Simulation"
+  short_description: "Select and debug Vivado simulation flows"
+  default_prompt: "Use $vivado-sim to set up the right simulation flow for this design."

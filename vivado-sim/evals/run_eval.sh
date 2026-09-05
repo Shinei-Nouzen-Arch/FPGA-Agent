@@ -12,7 +12,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
 EVAL_SET="$SCRIPT_DIR/trigger_eval.json"
-EVAL_RUNNER="/home/liulongwei/.claude/skills/skill-creator/scripts/run_eval.py"
+EVAL_RUNNER="${CODEX_SKILL_EVAL_RUNNER:-${HOME}/.codex/skills/.system/skill-creator/scripts/run_eval.py}"
 
 # Defaults
 VERBOSE=""
@@ -37,7 +37,7 @@ done
 
 if [[ ! -f "$EVAL_RUNNER" ]]; then
     echo "Error: Eval runner not found at $EVAL_RUNNER"
-    echo "Make sure skill-creator is installed."
+    echo "Set CODEX_SKILL_EVAL_RUNNER to a compatible run_eval.py if your Codex install does not include one."
     exit 1
 fi
 
@@ -47,9 +47,9 @@ echo "Eval set: $EVAL_SET"
 echo "Runs/query: $RUNS, Workers: $WORKERS"
 echo ""
 
-cd /home/liulongwei
+cd "$(dirname "$EVAL_RUNNER")/.."
 
-python3 -m scripts.run_eval \
+python3 "$EVAL_RUNNER" \
     --eval-set "$EVAL_SET" \
     --skill-path "$SKILL_DIR" \
     --runs-per-query "$RUNS" \

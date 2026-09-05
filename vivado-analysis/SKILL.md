@@ -1,6 +1,6 @@
 ---
 name: vivado-analysis
-description: Use this skill when the user needs help with Vivado design analysis, timing report interpretation, or timing closure. This includes report_timing interpretation (slack calculation, path analysis, clock skew/uncertainty), report_timing_summary signoff verification, report_qor_assessment (QoR scoring 1-5, assessment categories), report_qor_suggestions (automated optimization suggestions, .rqs workflow), report_design_analysis (timing path characteristics, complexity/Rent analysis, congestion analysis), report_methodology (design rule compliance), report_utilization (resource usage analysis), report_cdc (clock domain crossing checks), report_drc (design rule checks), report_bus_skew, timing closure strategies (setup/hold violation resolution, congestion mitigation), message severity management, and design check waivers. This skill provides analysis and interpretation knowledge — for TCL command execution use vivado-tcl, for constraint modifications use vivado-constraints, for implementation strategy changes use vivado-impl.
+description: Use this skill when the user needs Vivado design analysis, timing report interpretation, or timing-closure diagnosis. Covers report_timing/report_timing_summary, slack and path analysis, clock skew/uncertainty, report_qor_assessment/suggestions, report_design_analysis for congestion and complexity, report_methodology, utilization, CDC/DRC/bus skew reports, message severity, waivers, and setup/hold closure strategy. This skill interprets reports and recommends next analysis steps. For TCL execution use vivado-tcl, for constraint changes use vivado-constraints, for implementation directives use vivado-impl, for full timing closure workflows use vivado-timing-closure.
 ---
 
 # Vivado Design Analysis & Timing Closure Guide
@@ -108,7 +108,7 @@ Slack formula:
 | 2 | Will complete but will NOT meet timing | Significant optimization required |
 | 3 | Will likely NOT meet timing | Targeted optimization needed |
 | 4 | Will likely meet timing | Minor adjustments may suffice |
-| 5 | Will meet timing | Proceed to bitstream |
+| 5 | Favorable timing-closure assessment | Perform final verification; generate a bitstream only if it is part of the requested deliverable and the applicable checks pass |
 
 ### Five Assessment Categories
 | Category | What It Checks |
@@ -120,6 +120,8 @@ Slack formula:
 | Timing | WNS/TNS/WHS/THS per clock group, net/LUT budget |
 
 Each shows **OK** or **REVIEW** status. Items with asterisk (*) don't directly affect score but impact closure.
+
+A QoR score predicts closure likelihood; it does not replace checks on the final design. For closure requests, use the full [timing acceptance criteria](../vivado-timing-closure/SKILL.md#timing-acceptance-criteria), including constraint coverage and applicable bus-skew, CDC, DRC, and methodology checks. For report-only requests, explain the evidence and any verification gaps without automatically starting implementation or bitstream generation.
 
 ### ML Strategy Availability
 Available when ALL conditions met:

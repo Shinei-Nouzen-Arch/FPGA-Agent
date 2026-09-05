@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Synthesis"
+  short_description: "Tune Vivado synthesis and RTL inference"
+  default_prompt: "Use $vivado-synth to tune synthesis options and RTL inference."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Constraints"
+  short_description: "Write and debug Vivado XDC constraints"
+  default_prompt: "Use $vivado-constraints to review and improve these XDC constraints."

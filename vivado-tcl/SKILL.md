@@ -1,21 +1,22 @@
 ---
 name: vivado-tcl
-description: Use this skill when the user wants to generate, write, or execute Vivado/Vitis TCL scripts for FPGA design flows. This includes creating projects, running synthesis/implementation, programming devices, working with IP Integrator block designs, debug core insertion, constraint management, simulation, and any Vivado automation task. Trigger when the user mentions Vivado, Vitis, FPGA, TCL scripts for hardware design, bitstream generation, XDC constraints, ILA/VIO debug, or any Xilinx/AMD FPGA toolchain task. This skill generates and executes TCL — it does NOT analyze Vivado output or reports. For debug strategy and core configuration decisions use vivado-debug, for timing analysis use vivado-analysis.
+description: Generate, review, explain, and execute Vivado/Vitis TCL scripts for FPGA design flows, and verify their execution results. Covers project and non-project flows, synthesis, implementation, simulation, constraints, IP integration, and hardware programming. Use for explicit TCL requests or when scripting is needed to complete an already-authorized FPGA task; the user need not name TCL again. For pure report interpretation, strategy selection, constraint theory, or debug planning, use the relevant analysis, synthesis, implementation, constraints, or debug skill as the primary guide. Combine those skills with this one when execution and verification are needed.
 ---
 
 # Vivado TCL Script Generation Guide
 
 ## Overview
 
-This skill generates Vivado TCL scripts and executes them via `vivado -mode batch`. It covers the full FPGA design flow: project creation, synthesis, implementation, bitstream generation, hardware programming, IP integration, debug, and simulation. For the complete command reference, see REFERENCE.md.
+This skill generates and reviews Vivado TCL scripts and, when execution is part of the user's request, runs them via `vivado -mode batch` and verifies the results. It covers project creation, synthesis, implementation, bitstream generation, hardware programming, IP integration, debug, and simulation. For the complete command reference, see REFERENCE.md.
 
 ## Critical Rules
 
 1. **NEVER mix Project Mode and Non-Project Mode commands** — they are incompatible flows
 2. **Project Mode**: uses `create_project`, `add_files`, `launch_runs`, `wait_on_run`, `open_run`
 3. **Non-Project Mode**: uses `read_verilog`, `synth_design`, `opt_design`, `place_design`, `route_design`
-4. **Always ask the user which mode they want** if not obvious from context
-5. **This skill only generates/executes TCL** — do NOT attempt to parse or analyze Vivado reports or logs
+4. **Determine the mode from existing evidence first**: inspect the project, scripts, configuration, and prior user instructions. Preserve an established flow. For a new flow, choose a suitable mode and state the assumption unless the choice materially changes the requested deliverable or execution scope. Ask only for consequential information that cannot be established from available evidence; do not re-ask answered questions or invent a target device needed for execution.
+5. **Verify execution as part of this skill**: inspect exit status, run status, relevant logs/reports, and requested artifacts. Use vivado-analysis or other relevant skills for deeper design decisions while continuing the same task; switching skills does not require the user to repeat authorization.
+6. **Match the requested action**: review or script generation ends with the requested analysis or checked script, not an automatic execution. An execution or fix request includes its necessary in-scope validation and follow-up. Existing authorization remains valid; skill selection does not authorize additional design changes, hardware programming, or hardware writes.
 
 ## Execution Model
 
@@ -59,15 +60,25 @@ open_run synth_1 -name netlist_1
 report_timing_summary -file syn_timing.rpt
 report_power -file syn_power.rpt
 
-# 5. Implementation + bitstream
-launch_runs impl_1 -to_step write_bitstream
+# 5. Implementation through routing
+launch_runs impl_1 -to_step route_design
 wait_on_run impl_1
 
 # 6. Reports
 open_run impl_1
-report_timing_summary -file imp_timing.rpt
+report_timing_summary -delay_type min_max -file imp_timing.rpt
+report_route_status -file imp_route_status.rpt
+check_timing -file imp_check_timing.rpt
+report_drc -file imp_drc.rpt
 report_utilization -file imp_util.rpt
 report_power -file imp_power.rpt
+```
+
+Inspect the run status and reports against the task's acceptance criteria before the output stage. When bitstream generation is in scope and those checks pass, continue without another confirmation:
+
+```tcl
+launch_runs impl_1 -to_step write_bitstream
+wait_on_run impl_1
 ```
 
 ## Quick Reference: Non-Project Mode Flow
@@ -95,11 +106,17 @@ write_checkpoint -force $outputDir/post_route.dcp
 
 # 4. Reports
 report_timing_summary -file $outputDir/post_route_timing.rpt
+report_route_status -file $outputDir/post_route_status.rpt
+check_timing -file $outputDir/post_route_check_timing.rpt
 report_utilization -file $outputDir/post_route_util.rpt
 report_power -file $outputDir/post_route_power.rpt
 report_drc -file $outputDir/post_route_drc.rpt
+```
 
-# 5. Generate bitstream
+After the applicable acceptance checks pass, generate a bitstream if requested. For unattended automation, encode the checks as failure conditions before this output block; merely producing reports is not verification.
+
+```tcl
+# 5. Generate the requested bitstream in the selected task output location
 write_bitstream -force $outputDir/top.bit
 ```
 
@@ -123,8 +140,11 @@ assign_bd_address
 validate_bd_design
 save_bd_design
 make_wrapper -files [get_files system.bd] -top
+```
 
-# Export for Vitis
+When a Vitis platform export is requested, first build the design and verify its applicable acceptance criteria and required bitstream using the relevant flow above. Then export to the selected output path:
+
+```tcl
 write_hw_platform -fixed -include_bit -force ./system_wrapper.xsa
 ```
 
@@ -187,20 +207,24 @@ add_wave bus(4)         ;# parentheses work too
 
 ### Error handling
 ```tcl
-if {[catch {<command>} result]} {
-    puts "Error: $result"
+if {[catch {<command>} result options]} {
+    puts stderr "Error: $result"
+    return -options $options $result
 }
 ```
 
+Propagate an unhandled stage failure to the batch caller; logging an error alone must not allow dependent stages to appear successful. When a fix is in scope, inspect the failure and make a relevant correction before retrying.
+
 ## Workflow Guidelines
 
-1. **Always write TCL to a `.tcl` file first**, then execute with `vivado -mode batch -source`
+1. **For batch execution, write TCL to a `.tcl` file first**, then run it with `vivado -mode batch -source`. For generation or review only, deliver the checked script or findings without executing the flow.
 2. **Include `file mkdir` for output directories** to avoid errors
 3. **Use `write_checkpoint`** at key stages in Non-Project Mode for recovery
-4. **Add `report_timing_summary`** after synthesis and after routing — timing closure is critical
-5. **Use `-force` on write commands** to allow re-runs without manual cleanup
+4. **Verify the stages actually run**: check run status and relevant logs, reports, and artifacts. Include `report_timing_summary` after synthesis and routing when those stages are in scope. Apply the full [timing acceptance criteria](../vivado-timing-closure/SKILL.md#timing-acceptance-criteria) before claiming timing closure; otherwise report the validation appropriate to the requested stage.
+5. **Limit `-force` to replaceable task outputs or already-authorized overwrites**. Establish ownership and replaceability from the task context, file provenance, and output paths; this is an evidence check, not a per-run user confirmation. Use a fresh output path for other existing files. Ask only when an overwrite is necessary and not already authorized. All `-force` examples here and in REFERENCE.md assume this output ownership check has been made.
 6. **For IP Integrator flows**, always `validate_bd_design` before proceeding
 7. **When programming hardware**, always check device connection before programming
+8. **Complete the requested outcome**: a script launch, successful process exit, or generated report alone is not proof of success. Continue necessary authorized work; if a required step cannot be completed, identify the specific missing result and finish unaffected work without claiming the whole task is complete.
 
 ## Common Part Numbers (examples)
 

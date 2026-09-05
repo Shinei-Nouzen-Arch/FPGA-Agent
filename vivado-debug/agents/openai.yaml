@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vivado Debug"
+  short_description: "Plan Vivado hardware debug workflows"
+  default_prompt: "Use $vivado-debug to choose an ILA/VIO hardware debug strategy."

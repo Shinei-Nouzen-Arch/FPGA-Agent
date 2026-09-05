@@ -444,7 +444,9 @@ set_property PHASESHIFT_MODE {WAVEFORM|LATENCY} [get_cells mmcm_inst]
 | 2 | Design will complete but NOT meet timing | Significant optimization, strategy changes |
 | 3 | Design will likely NOT meet timing | Targeted fixes, try alternative strategies |
 | 4 | Design will likely meet timing | Minor constraint/strategy adjustments |
-| 5 | Design will meet timing | Proceed to bitstream |
+| 5 | Favorable timing-closure assessment | Perform final verification; generate a bitstream only if requested and the applicable checks pass |
+
+The score is not signoff. Use the full [timing acceptance criteria](../vivado-timing-closure/SKILL.md#timing-acceptance-criteria) on the final design and complete the requested deliverables before claiming closure. A report-only request does not authorize implementation or bitstream generation.
 
 ### Assessment Categories
 | Category | Checks | Threshold Behavior |

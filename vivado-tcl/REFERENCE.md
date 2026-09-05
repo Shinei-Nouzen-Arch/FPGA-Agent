@@ -11,6 +11,8 @@ vivado -mode batch -source script.tcl -tclargs "FPGA=I15-2"
 ```
 Vivado exits after script completes. Journal file `vivado.jou` records all commands.
 
+Execution includes inspecting run status, relevant logs/reports, and requested artifacts. Propagate stage failures and correct them within scope before retrying; process exit or report creation alone does not prove the requested outcome. Follow the [Workflow Guidelines](./SKILL.md#workflow-guidelines) for stage selection, output ownership, and completion.
+
 ### TCL Shell Mode (interactive)
 ```
 vivado -mode tcl
@@ -25,6 +27,8 @@ vivado -mode tcl
 
 ## 2. Two Flow Modes — Commands Are NOT Interchangeable
 
+Determine the mode from the existing project, scripts, configuration, and user instructions. Preserve an established flow; otherwise choose a suitable mode and state the assumption. Ask only when an unresolved choice materially changes the deliverable or execution scope, and reuse prior answers and authorization.
+
 ### Project Mode
 Vivado manages files, runs, status, reports automatically. Use wrapper commands.
 
@@ -37,9 +41,10 @@ Vivado manages files, runs, status, reports automatically. Use wrapper commands.
 | Wait for completion | `wait_on_run synth_1` |
 | Open synth results | `open_run synth_1 -name netlist_1` |
 | Reports after synth | `report_timing_summary`, `report_power` |
-| Launch implementation+bitstream | `launch_runs impl_1 -to_step write_bitstream` |
+| Launch implementation through routing | `launch_runs impl_1 -to_step route_design` |
 | Wait for implementation | `wait_on_run impl_1` |
 | Open impl results | `open_run impl_1` |
+| Requested bitstream, after applicable verification | `launch_runs impl_1 -to_step write_bitstream` |
 | GUI | `start_gui` / `stop_gui` |
 | Close | `close_design`, `close_project` |
 
@@ -187,12 +192,14 @@ add_wave \\my\\ sig\\
 
 ### Error handling
 ```tcl
-if {[catch {<command>} result]} {
-    puts "Error: $result"
-    puts $ERRORINFO
+if {[catch {<command>} result options]} {
+    puts stderr "Error: $result"
+    return -options $options $result
 }
-# Commands return TCL_OK or TCL_ERROR
+# Preserve the original error and stack information for the batch caller.
 ```
+
+Do not swallow a stage failure and continue to dependent steps. Read the resulting diagnostics and make relevant corrections when fixing the flow is authorized.
 
 ### Tcl.pre and Tcl.post hooks
 Every design flow step supports pre/post hook scripts for customization.
@@ -205,6 +212,10 @@ get_property DIRECTORY [current_run]
 ---
 
 ## 5. Complete Workflow Templates
+
+Select the stages needed for the requested outcome. Script generation or review does not authorize running these templates, and analysis does not require a full build. The separated blocks mark execution/verification decisions, not mandatory user-confirmation points: continue automatically when the applicable checks pass and the next stage is already authorized. For unattended scripts, encode those checks as failure conditions before dependent output stages.
+
+All `-force` examples assume the output is known to be replaceable from task ownership and file provenance, or its overwrite is already authorized. This evidence check does not require per-run confirmation. For other existing files, use a fresh path; ask only if overwriting is necessary and not already authorized. Hardware programming and writes require the corresponding task authorization, not merely selection of this skill.
 
 ### Template A: Project Mode — RTL to Bitstream
 ```tcl
@@ -225,18 +236,25 @@ open_run synth_1 -name netlist_1
 report_timing_summary -delay_type max -file syn_timing.rpt
 report_power -file syn_power.rpt
 
-# Launch implementation through bitstream
-launch_runs impl_1 -to_step write_bitstream
+# Launch implementation through routing
+launch_runs impl_1 -to_step route_design
 wait_on_run impl_1
 
 # Open implementation results, generate reports
 open_run impl_1
 report_timing_summary -delay_type min_max -file imp_timing.rpt
+report_route_status -file imp_route_status.rpt
+check_timing -file imp_check_timing.rpt
+report_drc -file imp_drc.rpt
 report_power -file imp_power.rpt
 report_utilization -file imp_util.rpt
+```
 
-# Optional: open GUI
-start_gui
+Inspect run status and reports against the task's acceptance criteria. If bitstream generation is requested and the applicable checks pass, continue:
+
+```tcl
+launch_runs impl_1 -to_step write_bitstream
+wait_on_run impl_1
 ```
 
 ### Template B: Non-Project Mode — RTL to Bitstream
@@ -271,8 +289,14 @@ report_clock_utilization -file $outputDir/clock_util.rpt
 report_utilization -file $outputDir/post_route_util.rpt
 report_power -file $outputDir/post_route_power.rpt
 report_drc -file $outputDir/imp_drc.rpt
+report_route_status -file $outputDir/post_route_status.rpt
+check_timing -file $outputDir/post_route_check_timing.rpt
+```
 
-# STEP 5: Generate outputs
+Inspect the collected evidence before advancing. For timing-closure tasks, apply the full [Timing Acceptance Criteria](../vivado-timing-closure/SKILL.md#timing-acceptance-criteria). Run only the requested output commands after their applicable checks pass:
+
+```tcl
+# STEP 5: Generate requested outputs in the selected task output locations
 write_bitstream -force $outputDir/top.bit
 write_verilog -force $outputDir/impl_netlist.v
 write_xdc -no_fixed_only -force $outputDir/impl.xdc
@@ -308,13 +332,24 @@ save_bd_design
 make_wrapper -files [get_files system.bd] -top
 add_files -norecurse ./my_bd_project/my_bd_project.gen/sources_1/bd/system/hdl/system_wrapper.v
 
-# Synthesize and implement
+# Synthesize and implement through routing when a build is requested
 launch_runs synth_1
 wait_on_run synth_1
+launch_runs impl_1 -to_step route_design
+wait_on_run impl_1
+open_run impl_1
+report_timing_summary -delay_type min_max -file bd_timing.rpt
+report_route_status -file bd_route_status.rpt
+check_timing -file bd_check_timing.rpt
+report_drc -file bd_drc.rpt
+```
+
+Inspect the build status and applicable acceptance evidence. When bitstream generation and Vitis export are requested and the checks pass, continue:
+
+```tcl
 launch_runs impl_1 -to_step write_bitstream
 wait_on_run impl_1
-
-# Export hardware for Vitis
+# Verify the requested bitstream exists and its run succeeded before export.
 write_hw_platform -fixed -include_bit -force ./system_wrapper.xsa
 ```
 
@@ -381,7 +416,20 @@ implement_debug_core
 # Write debug probes file
 write_debug_probes -force ./output/top.ltx
 
-# Continue to implementation
+# Continue through routing when implementation is in scope
+launch_runs impl_1 -to_step route_design
+wait_on_run impl_1
+open_run impl_1
+report_debug_core
+report_timing_summary -delay_type min_max -file debug_timing.rpt
+report_route_status -file debug_route_status.rpt
+check_timing -file debug_check_timing.rpt
+report_drc -file debug_drc.rpt
+```
+
+Verify that the requested debug configuration is present and the applicable implementation checks pass. If the requested deliverable includes a bitstream, continue without re-asking for the same authorization:
+
+```tcl
 launch_runs impl_1 -to_step write_bitstream
 wait_on_run impl_1
 ```
