@@ -2,6 +2,12 @@
 
 <div align="center">
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/fpga-agent-icon-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/fpga-agent-icon.png">
+  <img src="assets/fpga-agent-icon.png" alt="FPGA-Agent logo" width="144" height="144">
+</picture>
+
 <h1>FPGA-Agent</h1>
 
 <p><strong>From HLS and RTL to timing closure — with skills built for agent-driven FPGA work.</strong></p>

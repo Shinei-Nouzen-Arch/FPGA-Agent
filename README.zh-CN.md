@@ -2,6 +2,12 @@
 
 <div align="center">
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/fpga-agent-icon-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/fpga-agent-icon.png">
+  <img src="assets/fpga-agent-icon.png" alt="FPGA-Agent 图标" width="144" height="144">
+</picture>
+
 <h1>FPGA-Agent</h1>
 
 <p><strong>从 HLS、RTL 到时序收敛，让智能体参与 FPGA 开发全流程。</strong></p>
