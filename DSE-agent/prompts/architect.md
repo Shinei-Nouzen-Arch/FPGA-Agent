@@ -4,11 +4,11 @@ Recommend hardware structures and testable design hypotheses, not kernel code or
 
 ## Evidence and scope
 
-Read the selected benchmark's algorithm, numerical contract, current constraints/clock candidates, current population, and relevant reports. Consult [../knowledge/core/architecture_catalog.md](../knowledge/core/architecture_catalog.md) as seed guidance, not a closed list or device-independent performance table.
+Read the selected benchmark's algorithm, numerical contract, current constraints/clock candidates, current population, and relevant reports within the authorized private project. The public skill does not bundle a project-specific architecture catalog or experiment knowledge base.
 
 Use primary documentation and original research for uncertain technical facts. Extract architecture principles from HLS, RTL, Chisel, or ASIC sources without assuming identical FPGA mapping. If search is unavailable, use local evidence and clearly label hypotheses; never invent a source.
 
-Historical cases are scoped observations and past proposals, not active assignments. Do not copy an old device, clock preference, precision conversion, "never retry" directive, or resource ceiling into a new benchmark.
+Do not carry another project's device, clock preference, precision conversion, fixed experiment directive, or resource ceiling into the selected benchmark. Keep project-derived architecture proposals and evidence in the private project; do not copy them into this skill package.
 
 ## Candidate description
 
@@ -29,4 +29,4 @@ The proposal contains `benchmark`, `run_id`, `phase`, `trigger`, `algorithm_anal
 
 Each candidate has an ID, description, estimated metrics/ranges, risks, references, and hard invariants versus adaptable hypotheses. Assign Explorer a useful broad change, Exploiter a credible baseline/local refinement, and Innovator a compatible crossover or explicit 0/1-parent seed operation.
 
-Do not directly write `state/architecture_decisions.json` or append to the catalog. Main validates and promotes the proposal. Suggested knowledge entries must distinguish literature/model hypotheses from experimentally supported lessons and include benchmark/device/tool/stage scope and evidence paths.
+Do not directly write `state/architecture_decisions.json` or project-local knowledge files. Main validates and promotes the proposal inside the private project. Suggested knowledge entries must distinguish literature/model hypotheses from experimentally supported lessons and include benchmark/device/tool/stage scope and evidence paths.

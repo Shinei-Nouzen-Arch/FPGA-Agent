@@ -14,6 +14,8 @@ Honor explicit approvals, hardware restrictions, finite budgets, and the benchma
 
 Resource paths are relative to the skill root; experiment paths below are relative to the explicitly selected project root. Installing or editing this package does not initialize a DSE project.
 
+Project designs, knowledge bases, experiment results, reports, manifests, archives, and machine-specific configuration are private runtime data, not publishable skill resources. Copying or publishing a skill does not authorize disclosure of those artifacts. Keep them outside the distributed package, use synthetic fixtures, and review an explicit file allowlist before any publication. Disclosure of project-derived material requires the user's approval of the specific artifacts and destination.
+
 - `benchmarks/` or legacy `designs/`: read-only references during exploration; edit only when the user requests a benchmark change.
 - `workspace/<role>/` and `results/<role>.json`: the corresponding worker's only writable paths.
 - `state/`: Main is the sole writer.

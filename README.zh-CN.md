@@ -128,7 +128,7 @@ HLS C/C++  →  RTL  →  综合  →  实现  →  时序检查
 - **可追溯的候选：** 通过输入指纹和阶段执行凭据，关联源码、头文件、测试数据、配置、工具身份和报告。
 - **保留实验结果：** 使用不可覆盖的候选归档和父本引用，避免工作区复用破坏已有证据。
 - **可比较的指标：** 使用固定参考点的精确 N 维超体积（HV），记录目标单位、配置标识，并区分延迟与吞吐指标。
-- **有适用范围的知识：** 架构指导与历史案例用于辅助规划，不会成为所有任务的通用约束。
+- **项目知识保持私有：** 学习到的知识与实验依据保留在所选项目中，不随公开技能包发布。
 
 ### 开始一次搜索
 
@@ -158,7 +158,6 @@ HLS C/C++  →  RTL  →  综合  →  实现  →  时序检查
 | [DSE-agent/src/hls_run.sh](DSE-agent/src/hls_run.sh) | 遵循执行策略的 HLS 阶段入口 |
 | [DSE-agent/src/artifacts.py](DSE-agent/src/artifacts.py) | 输入／执行凭据检查与候选归档 |
 | [DSE-agent/src/hypervolume.py](DSE-agent/src/hypervolume.py) | 正式候选种群的只读指标与超体积计算 |
-| [DSE-agent/knowledge/](DSE-agent/knowledge/) | 架构类别、示例平台与限定范围的案例 |
 
 </details>
 

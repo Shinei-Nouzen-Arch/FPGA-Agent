@@ -15,3 +15,23 @@ vitis*.log
 
 # Operating-system metadata
 .DS_Store
+
+# Private DSE project data is not part of the distributable skill.
+/DSE-agent/knowledge/
+/DSE-agent/benchmarks/
+/DSE-agent/designs/
+/DSE-agent/workspace/
+/DSE-agent/state/
+/DSE-agent/results/
+/DSE-agent/archive/
+/DSE-agent/tmp/
+/DSE-agent/.dse/
+/knowledge/
+/benchmarks/
+/designs/
+/workspace/
+/state/
+/results/
+/archive/
+/tmp/
+/.dse/

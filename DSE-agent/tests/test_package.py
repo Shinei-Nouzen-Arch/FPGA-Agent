@@ -21,7 +21,14 @@ class PackageTests(unittest.TestCase):
             if path.is_file() and path.suffix in (".md", ".py", ".sh", ".yaml", ".json"):
                 content = path.read_text(encoding="utf-8")
                 self.assertFalse(any(0x4E00 <= ord(c) <= 0x9FFF for c in content), str(path))
-                self.assertNotIn("/home/" + "example-user/", content, str(path))
+                self.assertIsNone(re.search(r"/(?:home|Users)/[^/\s]+/", content), str(path))
+
+    def test_private_runtime_data_is_not_bundled(self):
+        for name in ("knowledge", "benchmarks", "designs", "workspace", "state",
+                     "results", "archive", "tmp", ".dse"):
+            directory = ROOT / name
+            self.assertFalse(directory.exists() and any(p.is_file() for p in directory.rglob("*")),
+                             f"Private runtime data must not be bundled: {name}")
 
     def test_markdown_links_resolve(self):
         for path in ROOT.rglob("*.md"):

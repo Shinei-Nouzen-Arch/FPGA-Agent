@@ -88,11 +88,12 @@
       ]
     },
     {
-      "id": "historical_directive",
-      "context": "A legacy example-project case says a later round must remove recovery logic.",
+      "id": "private_project_publication",
+      "context": "A user requests publication of the generic skill while the active project contains private experiments and learned knowledge.",
       "expected": [
-        "Treat as a scoped historical proposal",
-        "Do not transfer device/clock/budget or remove current required recovery"
+        "Review an explicit allowlist of generic skill resources",
+        "Exclude project inputs, knowledge bases, reports, archives, and machine-specific configuration",
+        "Do not treat permission to publish the skill as permission to disclose project-derived artifacts"
       ]
     },
     {

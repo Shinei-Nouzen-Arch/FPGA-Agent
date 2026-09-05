@@ -128,7 +128,7 @@ Each round uses fresh worker identities and isolated workspaces. Limited concurr
 - **Traceable candidates:** input fingerprints and stage receipts bind source, headers, test data, configuration, tool identity, and reports.
 - **Preserved results:** immutable candidate archives and parent references survive workspace reuse.
 - **Comparable metrics:** fixed-reference, exact N-dimensional hypervolume records objective units, configuration identity, and separate latency/throughput metrics.
-- **Scoped knowledge:** architecture guidance and historical cases support planning without becoming universal constraints.
+- **Private project knowledge:** learned knowledge and experiment evidence stay in the selected project, outside the published skill package.
 
 ### Start a search
 
@@ -158,7 +158,6 @@ These are natural-language requests, not shell commands. Runtime files belong to
 | [DSE-agent/src/hls_run.sh](DSE-agent/src/hls_run.sh) | Policy-aware HLS stage execution |
 | [DSE-agent/src/artifacts.py](DSE-agent/src/artifacts.py) | Input/receipt verification and candidate archival |
 | [DSE-agent/src/hypervolume.py](DSE-agent/src/hypervolume.py) | Read-only formal-population metrics and hypervolume |
-| [DSE-agent/knowledge/](DSE-agent/knowledge/) | Architecture families, example platform, and scoped cases |
 
 </details>
 

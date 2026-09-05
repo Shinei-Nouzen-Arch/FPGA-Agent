@@ -9,7 +9,7 @@ Use capable-model judgment to choose evidence-backed experiments within the user
 
 ## Roots and routing
 
-- **Skill root** is the directory containing this file: prompts, references, scripts, and bundled knowledge are resources, not the active experiment.
+- **Skill root** is the directory containing this file: generic prompts, references, scripts, and synthetic tests are resources, not the active experiment.
 - **Project root** is the user's selected DSE project: benchmark inputs, runtime state, worker workspaces, results, and archives live there. Resolve both roots to absolute paths before acting; do not assume they coincide.
 - Read [AGENTS.md](AGENTS.md) for ownership and delegation rules. For initialization or execution also read [references/contracts.md](references/contracts.md).
 - `init req`, `run dse`, and `show pareto` are natural-language intent labels, not shell commands. Keep the package directory named `DSE-agent`; its compatible invocation name is `$run-agentic-dse`.
@@ -24,6 +24,12 @@ Use capable-model judgment to choose evidence-backed experiments within the user
 
 Missing runtime files are not a reason to refuse read-only advice. State what can be established and which evidence is absent. Do not silently turn a diagnostic request into a repair.
 
+## Publication boundary
+
+Keep project-specific designs, benchmark inputs, experiment records, learned knowledge, reports, input manifests, archives, and local environment details in the private project directory. This skill package does not bundle a project's knowledge base or target configuration.
+
+A request to copy, update, or publish the skill authorizes generic skill resources, not disclosure of local development content. Review an explicit file allowlist before publication. Use synthetic examples and placeholders; publish project-derived material only when the user explicitly approves those specific artifacts for that destination. This boundary does not prevent authorized local experiments or read-only analysis.
+
 ## Initialize or reconcile an authorized run
 
 1. Identify the benchmark from the request and project context. Support an existing `benchmarks/<name>/` or legacy `designs/<name>/` layout; do not rename it. Read its source, testbench, configuration, and `objectives.json` or `spec.json`. Preserve reference implementations, test vectors, interfaces, arithmetic behavior, and tolerances.
@@ -37,7 +43,7 @@ Missing runtime files are not a reason to refuse read-only advice. State what ca
    - `knowledge/learned/successful_configs.json` and `failure_cases.json` as empty arrays, and `learned_hints.json` as an empty object;
    - `results/`, `tmp/`, and separate `workspace/<role>/src` and `tb` trees, seeded from the selected benchmark with a usable role-local `config.cfg`.
 6. Preserve existing state and user edits. Infer or migrate unambiguous legacy metadata without inventing validation. Reconcile missing files from existing evidence; do not erase a population merely because one file is absent. A conflicting active benchmark needs the requested switch/archive procedure, not silent replacement.
-7. Record target facts from the selected project or installed tools. [knowledge/core/platform_specs.json](knowledge/core/platform_specs.json) is a named example profile, never an implicit target. Missing optional HV configuration or architecture estimates need not block an otherwise executable run.
+7. Record target facts from the selected project or installed tools in private project state. Do not package a real project's platform profile as a public default. Missing optional HV configuration or architecture estimates need not block an otherwise executable run.
 
 ## Execute rounds
 
