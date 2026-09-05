@@ -1,0 +1,53 @@
+{
+  "description": "Requirement extraction and clarification policy; a question batch limit never discards unresolved blockers.",
+  "max_questions_per_batch": 3,
+  "evidence_order": [
+    "explicit user instruction",
+    "selected benchmark and numerical contract",
+    "consistent project configuration",
+    "documented in-scope assumption"
+  ],
+  "blocking_questions": {
+    "condition": "A material correctness, acceptance, scope, authority, or bounded-execution choice remains unresolved after inspecting available evidence.",
+    "retain_all": true,
+    "examples": [
+      "ambiguous benchmark identity with incompatible interfaces",
+      "conflicting hard precision requirements",
+      "until-converged execution without a finite existing budget"
+    ]
+  },
+  "optional_preferences": {
+    "condition": "A preference would improve ranking but is not necessary for correct authorized progress.",
+    "action": "Record an in-scope default and continue; low estimate confidence is not an approval gate.",
+    "examples": [
+      "fast without a hard deadline",
+      "unspecified ranking among existing resource objectives"
+    ]
+  },
+  "extractable_fields": {
+    "latency_ns_max": "Numeric hard latency limit with units; otherwise null.",
+    "ii_ns_max": "Numeric hard transaction interval bound; do not confuse throughput with latency.",
+    "frequency_mhz_min": "Numeric minimum frequency; clock_ns <= 1000/frequency_mhz_min.",
+    "resource_limits": "Resolve LUT/FF/DSP/URAM counts and BRAM_18K versus BRAM_36K units from evidence.",
+    "power_w_max": "Use an explicit measured-power requirement; DSP count is not a power measurement.",
+    "priority": "Only the relevant configured objectives; do not force an unrelated fixed list."
+  },
+  "unit_conversion": {
+    "ms_to_ns": 1000000,
+    "us_to_ns": 1000,
+    "frequency_to_period": "1000 / frequency_mhz; do not round into a slower period.",
+    "bram_18k_to_36k": 0.5
+  },
+  "clock_selection": "Filter existing benchmark candidates by the actual hard frequency requirement. No invented universal candidates or implicit example-device clock.",
+  "output_fields": [
+    "benchmark",
+    "run_id",
+    "user_requirement",
+    "extracted",
+    "evidence",
+    "assumptions",
+    "blocking_questions",
+    "optional_preferences",
+    "confidence"
+  ]
+}

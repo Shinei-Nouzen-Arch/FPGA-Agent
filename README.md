@@ -7,20 +7,7 @@ Reusable skills and agent prompts for AMD Vivado/Vitis FPGA development, from HL
 The repository includes two complementary components:
 
 1. **FPGA development skills** — nine skills for individual tasks and coordinated engineering workflows.
-2. **[Agentic-DSE](#agentic-dse--multi-agent-hls-design-space-exploration)** — the existing multi-agent HLS design-space exploration prompts in [DSE-agent/](DSE-agent/).
-
-## High-Capability Model Update
-
-This update revises the skill instructions for more capable reasoning models, such as **GPT-6** and **Claude Fable 5.1**. The emphasis is on giving capable models room to make evidence-backed decisions within the user's request, while preserving explicit approvals and engineering safeguards.
-
-- Infer routine details from the existing project and conversation; ask only when a consequential missing decision cannot be resolved from available evidence.
-- Coordinate analysis, scripting, and implementation without repeatedly asking for permission to continue work that is already authorized.
-- Select the stages needed for the requested outcome instead of treating every task as a full build, export, or programming workflow.
-- Treat a strategy plateau as a reason to reassess within the existing limits, not as successful completion.
-- Verify the complete result: positive setup, hold, and pulse-width margins; routing and constraint coverage; applicable design checks; and the requested deliverables.
-- Preserve original constraints, IP protections, explicit RTL/netlist restrictions, candidate validation, output ownership, and hardware authorization boundaries.
-
-These are instruction and workflow changes, not a model-specific API integration or a measured claim of better model accuracy, runtime, or FPGA performance. The named models describe the intended audience; no cross-model benchmark results are claimed. See [CHANGELOG.md](CHANGELOG.md) for the detailed changes and validation scope.
+2. **[Agentic-DSE](#agentic-dse--multi-agent-hls-design-space-exploration)** — multi-agent HLS design-space exploration with orchestration, worker prompts, and execution helpers in [DSE-agent/](DSE-agent/).
 
 ## Vivado/Vitis FPGA Development Skills
 
@@ -113,64 +100,68 @@ vivado-tcl ──→ vivado-debug (debug decisions), vivado-analysis (analysis),
 
 ## Agentic-DSE — Multi-Agent HLS Design Space Exploration
 
-The existing [DSE-agent/](DSE-agent/) prompt set is retained unchanged by the high-capability skill refresh.
+[Agentic-DSE](DSE-agent/SKILL.md) coordinates a Main Agent and three specialized workers to explore architecture, pragma, parameter, and clock choices for a selected HLS benchmark.
 
-An agentic FPGA HLS design space exploration system. A Main Agent (architect + evolution scheduler) coordinates 3 Worker Agents to explore the Pareto-optimal frontier of FPGA designs through iterative refinement.
+- **Explorer:** broad architecture and parameter exploration.
+- **Exploiter:** local refinement of a baseline or validated parent.
+- **Innovator:** feature-level crossover, with explicit seed variants for zero- or one-parent populations.
 
-## How It Works
+Main handles requirement parsing, architecture proposals, assignments, evidence checks, immutable archives, Pareto selection, and learned knowledge. Each round uses fresh worker identities and isolated workspaces; limited concurrency is handled by batching the three roles.
+
+### Capabilities
+
+- Read-only requirement review, architecture advice, Pareto inspection, and convergence diagnosis.
+- Project initialization and continuation with existing benchmark inputs and runtime state.
+- Fixed-round execution or bounded until-converged search, with one total retry budget per assignment.
+- Formal Csim/Csynth/Cosim/implementation workflows, or explicitly requested cosim-only exploration with separate provisional results.
+- Input fingerprints and stage receipts that bind source, headers, test data, configuration, tool identity, and reports to each candidate.
+- Immutable candidate archives and parent references that survive workspace reuse.
+- Fixed-reference, exact N-dimensional hypervolume with explicit objective units, configuration identity, and separate latency/throughput metrics.
+- Scoped architecture guidance and historical case evidence for reusable experiment planning.
+
+### Package Structure
+
+| Path | Purpose |
+| --- | --- |
+| [DSE-agent/SKILL.md](DSE-agent/SKILL.md) | Main workflow, task routing, and stopping rules |
+| [DSE-agent/AGENTS.md](DSE-agent/AGENTS.md) | Ownership, delegation, and execution boundaries |
+| [DSE-agent/agent.md](DSE-agent/agent.md) | Compatibility entry point |
+| [DSE-agent/prompts/](DSE-agent/prompts/) | Parser, Architect, worker, coding, and checklist guidance |
+| [DSE-agent/references/](DSE-agent/references/) | Shared worker workflow, state, result, and evidence contracts |
+| [DSE-agent/src/hls_run.sh](DSE-agent/src/hls_run.sh) | Policy-aware HLS stage execution |
+| [DSE-agent/src/artifacts.py](DSE-agent/src/artifacts.py) | Input/receipt verification and candidate archival |
+| [DSE-agent/src/hypervolume.py](DSE-agent/src/hypervolume.py) | Read-only formal-population metrics and hypervolume |
+| [DSE-agent/knowledge/](DSE-agent/knowledge/) | Architecture families, named example platform, and scoped cases |
+
+### Using Agentic-DSE
+
+Keep the `DSE-agent` directory intact. Its skill invocation name is `$run-agentic-dse`; hosts that load prompts directly can start at `SKILL.md` or the compatibility `agent.md`.
+
+1. Select a project containing a benchmark's source, testbench/test vectors, target configuration, and objectives or specification. Existing `benchmarks/<name>/` and legacy `designs/<name>/` layouts are supported.
+2. Ask the agent to initialize the selected benchmark and requirements. Main prepares missing state and isolated worker inputs without replacing existing work.
+3. Request a bounded search or read-only analysis, for example:
+
+   - "Run three DSE rounds for this benchmark, preserving its numerical contract."
+   - "Run two cosim-only rounds; do not run implementation."
+   - "Continue until converged, for at most six rounds."
+   - "Show the Pareto front and explain the current bottleneck without changing files."
+
+These are natural-language requests, not shell commands. The skill-resource directory and active project directory may be different; runtime files belong to the selected project.
+
+The execution helpers use Python 3.10+ and the configured Vitis command-line tools. Exact hypervolume uses NumPy and pymoo; status reporting remains available without the optional numerical backend. An agent host needs file access, shell execution, and worker delegation for multi-agent rounds.
+
+### Project Runtime Layout
 
 ```
-Main Agent (agent.md)
-├── Explorer Worker     — large-step mutation, explores new architecture/parameter space
-├── Exploiter Worker    — small-step fine-tuning, incremental optimization
-└── Innovator Worker    — feature-level crossover, fuses two parent designs
-     ↓
-T1 (checklist) → T2 (synthesis) → T3 (co-simulation) → T4 (implementation)
-     ↓
-Pareto front update → Hypervolume check → Self-evolving knowledge base
+project/
+├── benchmarks/<name>/       Reference source, tests, and requirements
+├── workspace/<role>/        Isolated candidate inputs and HLS output
+├── results/<role>.json      Worker result and evidence references
+├── state/                  Main-owned directive, population, and lineage
+├── knowledge/learned/       Main-owned, evidence-linked experiment lessons
+├── tmp/<run_id>/            Parser and Architect proposals
+└── archive/<run_id>/        Immutable round and candidate snapshots
 ```
-
-Each round: the Main Agent analyzes bottlenecks, assigns tasks to all 3 Workers in parallel, collects validated results, and updates the Pareto frontier. The process converges when Hypervolume improvement drops below a threshold.
-
-## What's In This Repo
-
-| File | Purpose |
-|------|--------|
-| [DSE-agent/agent.md](DSE-agent/agent.md) | Main Agent instructions — full orchestration protocol (`init req` → `run dse` → convergence) |
-| [DSE-agent/prompts/architect.md](DSE-agent/prompts/architect.md) | Hardware Architect Agent — selects architectures, analyzes critical paths, guides DSE direction |
-| [DSE-agent/prompts/explorer.md](DSE-agent/prompts/explorer.md) | Explorer Worker — large-step mutation, bold architectural changes |
-| [DSE-agent/prompts/exploiter.md](DSE-agent/prompts/exploiter.md) | Exploiter Worker — small-step parameter/microarchitecture fine-tuning |
-| [DSE-agent/prompts/innovator.md](DSE-agent/prompts/innovator.md) | Innovator Worker — feature-level crossover of two parent designs |
-| [DSE-agent/prompts/req_parser.md](DSE-agent/prompts/req_parser.md) | Requirement Parser Agent — converts user requirements into structured DSE configuration |
-| [DSE-agent/prompts/coding_style.md](DSE-agent/prompts/coding_style.md) | HLS C++ coding style guide based on AMD UG1399, with anti-patterns and templates |
-| [DSE-agent/prompts/hardware_checklist.md](DSE-agent/prompts/hardware_checklist.md) | Pre-synthesis hardware checklist (A1–F5) + co-simulation quick diagnostic |
-
-## Quick Start
-
-1. **Prepare your design** — Create `designs/<name>/` with `spec.json`, `src/kernel.cpp`, and `tb/testbench.cpp`
-2. **Initialize** — Run `init req <name>` with your requirements
-3. **Explore** — Run `run dse <name> [N]` to execute N rounds of DSE iteration
-
-## What's NOT Included (Must Be Created by You or the AI Agent)
-
-The DSE component contains **agent prompt configuration**, not a bundled execution runtime. The following are intentionally excluded and must be supplied or created when needed:
-
-| Component | Description | How to Get |
-|-----------|-------------|------------|
-| **HLS synthesis skill** | Vitis HLS tool knowledge (commands, pragma reference, report analysis) | Use the `vitis-hls-synthesis` skill from this repo, or create your own |
-| **Knowledge base** | `knowledge/core/` (architecture catalog, platform specs) and `knowledge/learned/` (success/failure cases) | Auto-generated by the Architect Agent at runtime using its own knowledge, or pre-populated manually |
-| **Hypervolume script** | `hypervolume.py` for Pareto frontier HV computation (pymoo-based) | Generate via AI or write your own; Mode A is optional — Mode B (simplified) and Mode C (manual) work without it |
-| **Benchmarks** | Reference designs and test vectors | Provide your own `designs/<name>/` directory with kernel source and testbench |
-| **Runtime state** | `state/`, `results/`, `tmp/` directories | Auto-created by agents during execution |
-
-## Agent Platform Compatibility
-
-The prompts are platform-agnostic. Use with any AI agent system that supports:
-
-- Reading files (`Read`)
-- Writing files (`Write`)
-- Spawning subagents (`sessions_spawn` or equivalent)
-- Shell execution (for HLS synthesis commands)
 
 ## License
 

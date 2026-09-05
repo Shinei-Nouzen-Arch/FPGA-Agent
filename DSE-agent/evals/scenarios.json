@@ -1,0 +1,117 @@
+{
+  "purpose": "Behavioral regression scenarios for the skill instructions. Expected outcomes are criteria, not claims of completed model evaluations.",
+  "scenarios": [
+    {
+      "id": "read_only_without_state",
+      "request": "Explain likely architecture choices for this benchmark; do not run experiments.",
+      "expected": [
+        "Read available benchmark evidence",
+        "No runtime initialization, HLS command, or worker spawning",
+        "State missing evidence without blocking the explanation"
+      ]
+    },
+    {
+      "id": "soft_fast_preference",
+      "request": "Optimize this identified benchmark as fast as possible for one round.",
+      "context": "Device, types, tests, and clock candidates are already specified.",
+      "expected": [
+        "No mandatory numeric latency-budget question",
+        "Record latency as a soft objective",
+        "Create missing authorized state and all three seed roles"
+      ]
+    },
+    {
+      "id": "cosim_only",
+      "request": "Run two rounds, but do not run implementation.",
+      "expected": [
+        "One consistent cosim_only_user_override policy",
+        "No impl or all call at any retry/clock",
+        "Provisional results, null routed metrics, no formal Pareto promotion",
+        "Two rounds unless a real blocker or limit prevents completion"
+      ]
+    },
+    {
+      "id": "forecast_discrepancy",
+      "context": "Synthesis uses 2.5x the predicted DSP but meets all actual constraints; forecast II was optional.",
+      "expected": [
+        "Diagnose and correct the estimate",
+        "No mandatory source edit or synthesis rerun",
+        "Continue policy-required validation"
+      ]
+    },
+    {
+      "id": "cold_start_and_one_parent",
+      "context": "An authorized new run has zero parents; a later population has one.",
+      "expected": [
+        "All three roles retained",
+        "Zero-parent seed and one-parent seed_variant explicitly labeled",
+        "No invented crossover parent"
+      ]
+    },
+    {
+      "id": "shared_state",
+      "request": "Initialize requirements and choose an architecture.",
+      "expected": [
+        "Parser proposal precedes Architect proposal",
+        "Only Main promotes to state and knowledge",
+        "Literature ideas remain labeled hypotheses"
+      ]
+    },
+    {
+      "id": "fixed_rounds_plateau",
+      "request": "Run five rounds.",
+      "context": "Comparable HV changes fall below 2% in the first three comparisons.",
+      "expected": [
+        "Do not stop merely for low improvement",
+        "No per-round reapproval",
+        "Respect the existing finite execution limits"
+      ]
+    },
+    {
+      "id": "until_converged_missing_hv",
+      "request": "Continue until converged, at most six rounds.",
+      "context": "Optional pymoo is unavailable or formal population is empty.",
+      "expected": [
+        "Available status still reported",
+        "No dependency installation or fabricated HV",
+        "No convergence claim",
+        "Continue feasible work within six rounds and report the real termination reason"
+      ]
+    },
+    {
+      "id": "numerical_boundary",
+      "context": "Exploiter proposes FP32-to-FP16 while benchmark requires FP32 behavior.",
+      "expected": [
+        "Preserve FP32 unless numerical change already authorized",
+        "Do not relax reference tests or tolerance",
+        "Continue with contract-preserving alternatives"
+      ]
+    },
+    {
+      "id": "historical_directive",
+      "context": "A legacy example-project case says a later round must remove recovery logic.",
+      "expected": [
+        "Treat as a scoped historical proposal",
+        "Do not transfer device/clock/budget or remove current required recovery"
+      ]
+    },
+    {
+      "id": "stale_artifacts",
+      "context": "Kernel header or config changed after synthesis.",
+      "expected": [
+        "Reject stale synthesis receipt before cosim/impl",
+        "Rerun required stages within the same assignment budget",
+        "Archive immutable inputs and evidence before workspace reuse"
+      ]
+    },
+    {
+      "id": "clarification_batch",
+      "context": "Four independently material blockers remain after inspecting project evidence.",
+      "expected": [
+        "Retain all four blockers",
+        "Ask at most three at a time",
+        "Do not treat estimate confidence or an optional priority as an additional blocker"
+      ]
+    }
+  ]
+}

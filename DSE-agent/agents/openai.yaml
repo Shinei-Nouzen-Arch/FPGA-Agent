@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Agentic-DSE"
+  short_description: "Orchestrate FPGA HLS multi-agent DSE"
+  default_prompt: "Use $run-agentic-dse to initialize requirements and run one validated DSE round for this benchmark."
