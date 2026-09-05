@@ -109,12 +109,6 @@ vivado-tcl ──→ vivado-debug (debug decisions), vivado-analysis (analysis),
 | vivado-impl | `examples/ug906/` | 3 sets of before/after RTL — report_qor_suggestions optimization examples |
 | vitis-hls-synthesis | `examples/` | Design/Feature/Introductory tutorials — Official AMD HLS reference implementations |
 
-## Validation Scope
-
-This instruction refresh is checked for skill frontmatter and UI metadata, internal documentation links, English-language evaluation fixtures, shell-script syntax, and TCL snippet completeness/error handling. These checks do not establish that every command or example executes successfully in Vivado.
-
-No live model evaluation, Vivado/Vitis synthesis, implementation, bitstream generation, or hardware programming was performed for this update. Use the target toolchain and a representative design to validate runtime behavior and engineering results. Optional helper interfaces in the timing-closure references are explicitly distinguished from built-in Vivado commands.
-
 ---
 
 ## Agentic-DSE — Multi-Agent HLS Design Space Exploration
